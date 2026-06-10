@@ -1,0 +1,5 @@
+# skills
+
+```sh
+./setup.sh
+```

@@ -1,0 +1,6 @@
+^\.git$
+^\.gitignore$
+^\.stowrc$
+^\.stow-local-ignore$
+^README\.md$
+^setup\.sh$

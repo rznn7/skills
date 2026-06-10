@@ -1,6 +1,6 @@
 ---
 name: td-green
-description: Progressively activates todo tests one at a time, updates implementation code until each passes (verified via Wallaby), then moves to the next—following the design doc as the single source of truth.
+description: Progressively activates todo tests one at a time, updates implementation code until each passes (verified via the project's configured test runner), then moves to the next—following the design doc as the single source of truth.
 ---
 
 # Context
@@ -11,6 +11,27 @@ description: Progressively activates todo tests one at a time, updates implement
 # Goal
 
 Using the design doc at `${designDocPath}` as the single source of truth, progressively activate the tests in `${testFilePath}`.
+
+# Test runner selection (do this FIRST, before touching any test)
+
+Decide how you will verify tests in THIS project, and remember the choice:
+
+1. Read `.claude/td-test-runner.json` from the project root.
+2. **If it exists and is valid**, use it as-is. Do not re-ask.
+3. **If it is missing or invalid**, ask the user with `AskUserQuestion` how they want tests run, then write their answer to `.claude/td-test-runner.json` so future runs skip the question. Offer at least:
+   - **Wallaby (MCP)** — per-test programmatic verification via the Wallaby MCP server.
+   - **Shell command** — a command you run with `Bash` and whose output you read. Ask the user for the exact command; prefer a single-run (non-watch), headless invocation that exits on completion and reports per-test pass/fail. Let them scope it to one spec file.
+
+Config schema:
+
+```json
+{
+  "mechanism": "wallaby | command",
+  "command": "<shell command, only for mechanism=command; may contain {spec}>"
+}
+```
+
+For `mechanism: "command"`, substitute `{spec}` with a unique substring of the spec filename (without extension) so it maps to the runner's file filter (e.g. an `--include` glob). Run the command from the directory the config implies.
 
 # Steps
 
@@ -35,5 +56,4 @@ NEVER implement tests.
 
 ONLY EDIT TESTS as a last resort after you have tried everything else.
 
-Use the Wallaby MCP server to verify test results after each change. Only once the current test passes should you advance to the next one.
-
+Use the test runner configured in `.claude/td-test-runner.json` (see "Test runner selection") to verify results after each change. Only once the current test passes should you advance to the next one. If that runner is a shell command, beware stale state: confirm the run you read reflects your latest edit.

@@ -22,19 +22,26 @@ Based on the design doc at ${designDocPath} (if present), implement the body of 
 Decide how you will run the red-check in THIS project, and remember the choice:
 
 1. Read `.claude/td-test-runner.json` from the project root.
-2. **If it exists and is valid**, use it as-is. Do not re-ask.
-3. **If it is missing or invalid**, ask the user with `AskUserQuestion` how they want tests run, then write their answer to `.claude/td-test-runner.json` so future runs skip the question. Offer at least:
+2. **If it exists and a runner matches `${testFilePath}`**, use that runner as-is. Do not re-ask.
+3. **If it is missing, invalid, or no runner matches the spec**, ask the user with `AskUserQuestion` how they want THIS spec's tests run, then write their answer into `.claude/td-test-runner.json` — **add a runner, don't clobber existing ones** — so future runs skip the question. Offer at least:
    - **Wallaby (MCP)** — per-test programmatic verification via the Wallaby MCP server.
    - **Shell command** — a command you run with `Bash` and whose output you read. Ask the user for the exact command; prefer a single-run (non-watch), headless invocation that exits on completion and reports per-test pass/fail. Let them scope it to one spec file.
 
-Config schema:
+Config schema — an array of runners, each selected by matching its `match` against the spec path. A monorepo with several test stacks (e.g. backend e2e + frontend `ng test`) keeps one entry per stack:
 
 ```json
 {
-  "mechanism": "wallaby | command",
-  "command": "<shell command, only for mechanism=command; may contain {spec}>"
+  "runners": [
+    {
+      "match": "<substring or glob tested against the spec path; first match wins; omit or \"*\" = catch-all>",
+      "mechanism": "wallaby | command",
+      "command": "<shell command, only for mechanism=command; may contain {spec}>"
+    }
+  ]
 }
 ```
+
+Select the runner whose `match` matches `${testFilePath}` (first match wins; a runner with no `match` or `"*"` is the catch-all — order it last). **Backward compatibility**: a legacy flat object with a top-level `mechanism`/`command` and no `runners` array is treated as a single catch-all runner.
 
 For `mechanism: "command"`, substitute `{spec}` with a unique substring of the spec filename (without extension) so it maps to the runner's file filter (e.g. an `--include` glob). Run the command from the directory the config implies.
 

@@ -56,4 +56,6 @@ NEVER implement tests.
 
 ONLY EDIT TESTS as a last resort after you have tried everything else.
 
+Write no comments in implementation code. The code should be self-explanatory through clear naming. Add a JSDoc block only when it genuinely adds value the signature cannot convey (e.g. a non-obvious contract or caveat), and keep it to one or two lines. Do not narrate steps, restate what the code does, or leave TODO/explanatory comments.
+
 Use the test runner configured in `.claude/td-test-runner.json` (see "Test runner selection") to verify results after each change. Only once the current test passes should you advance to the next one. If that runner is a shell command, beware stale state: confirm the run you read reflects your latest edit.

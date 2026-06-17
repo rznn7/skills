@@ -15,6 +15,7 @@ Based on the design doc at ${designDocPath} (if present), implement the body of 
 - Remove the step-by-step comment instructions from the test body and replace them with actual code.
 - Remember that you love TDD and you want to write tests first.
 - Implement the test only, do not implement the feature.
+- Write no comments in the test body — the test code should read clearly on its own. Do not re-add the step descriptions as comments alongside the code.
 
 # Test runner selection (do this FIRST, before writing the test)
 

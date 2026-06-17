@@ -22,6 +22,7 @@ Based on the following design doc ${designDocPath}, write WIP code for implement
   - If the function or method receives a new optional parameter, make it throw a "🚧 work in progress" error if the parameter is set.
   - Even if the goal of the PR is to change the behavior of an existing function or method, do not throw a "🚧 work in progress" error. **KEEP THE EXISTING BEHAVIOR**.
 - For WIP tests, put the test's steps from the design doc as-is in a comment inside the body of the "it.todo" test.
+- Apart from the two intentional comments above — the `@deprecated 🚧 work in progress` JSDoc tag and the design steps inside `it.todo` bodies — write no comments. Do not add explanatory or narrating comments to scaffolded code, and keep any JSDoc to the required tag only.
 
 # Examples
 
